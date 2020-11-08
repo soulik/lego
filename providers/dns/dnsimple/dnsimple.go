@@ -21,6 +21,7 @@ const (
 
 	EnvOAuthToken = envNamespace + "OAUTH_TOKEN"
 	EnvBaseURL    = envNamespace + "BASE_URL"
+    EnvZoneName	  = envNamespace + "ZONE_NAME"
 
 	EnvTTL                = envNamespace + "TTL"
 	EnvPropagationTimeout = envNamespace + "PROPAGATION_TIMEOUT"
@@ -31,6 +32,7 @@ const (
 type Config struct {
 	AccessToken        string
 	BaseURL            string
+    ZoneName           string
 	PropagationTimeout time.Duration
 	PollingInterval    time.Duration
 	TTL                int
@@ -59,6 +61,7 @@ func NewDNSProvider() (*DNSProvider, error) {
 	config := NewDefaultConfig()
 	config.AccessToken = env.GetOrFile(EnvOAuthToken)
 	config.BaseURL = env.GetOrFile(EnvBaseURL)
+    config.ZoneName = env.GetOrFile(EnvZoneName)
 
 	return NewDNSProviderConfig(config)
 }
@@ -150,6 +153,9 @@ func (d *DNSProvider) getHostedZone(domain string) (string, error) {
 	}
 
 	zoneName := dns01.UnFqdn(authZone)
+    if d.config.ZoneName != "" {
+		zoneName = d.config.ZoneName
+	}
 
 	zones, err := d.client.Zones.ListZones(context.Background(), accountID, &dnsimple.ZoneListOptions{NameLike: &zoneName})
 	if err != nil {
