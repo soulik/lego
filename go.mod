@@ -49,6 +49,6 @@ require (
 	google.golang.org/api v0.20.0
 	gopkg.in/ns1/ns1-go.v2 v2.4.2
 	gopkg.in/square/go-jose.v2 v2.5.1
-	github.com/soulik/lego/v4 v4.0.2a
+	github.com/soulik/lego/v4 v4.0.2
 	gopkg.in/yaml.v2 v2.3.0
 )
