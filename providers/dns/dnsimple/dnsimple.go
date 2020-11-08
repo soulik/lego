@@ -153,9 +153,6 @@ func (d *DNSProvider) getHostedZone(domain string) (string, error) {
 	}
 
 	zoneName := dns01.UnFqdn(authZone)
-    if d.config.ZoneName != "" {
-		zoneName = d.config.ZoneName
-	}
 
 	zones, err := d.client.Zones.ListZones(context.Background(), accountID, &dnsimple.ZoneListOptions{NameLike: &zoneName})
 	if err != nil {
@@ -164,7 +161,7 @@ func (d *DNSProvider) getHostedZone(domain string) (string, error) {
 
 	var hostedZone dnsimple.Zone
 	for _, zone := range zones.Data {
-		if zone.Name == zoneName {
+		if (zone.Name == zoneName) || (zone.Name == d.config.ZoneName){
 			hostedZone = zone
 		}
 	}
