@@ -41,6 +41,7 @@ type Config struct {
 // NewDefaultConfig returns a default configuration for the DNSProvider.
 func NewDefaultConfig() *Config {
 	return &Config{
+		ZoneName: 			env.GetOrFile(EnvZoneName),
 		TTL:                env.GetOrDefaultInt(EnvTTL, dns01.DefaultTTL),
 		PropagationTimeout: env.GetOrDefaultSecond(EnvPropagationTimeout, dns01.DefaultPropagationTimeout),
 		PollingInterval:    env.GetOrDefaultSecond(EnvPollingInterval, dns01.DefaultPollingInterval),
@@ -74,6 +75,9 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 
 	if config.AccessToken == "" {
 		return nil, errors.New("dnsimple: OAuth token is missing")
+	}
+	if config.ZoneName == "" {
+		config.ZoneName = env.GetOrFile(EnvZoneName)
 	}
 
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: config.AccessToken})
