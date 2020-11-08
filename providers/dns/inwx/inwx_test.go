@@ -3,7 +3,7 @@ package inwx
 import (
 	"testing"
 
-	"github.com/go-acme/lego/v4/platform/tester"
+	"github.com/soulik/lego/v4/platform/tester"
 	"github.com/stretchr/testify/require"
 )
 

@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/go-acme/lego/v4/platform/config/env"
+	"github.com/soulik/lego/v4/platform/config/env"
 	"github.com/oracle/oci-go-sdk/common"
 )
 

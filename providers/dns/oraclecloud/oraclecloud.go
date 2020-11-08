@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-acme/lego/v4/challenge/dns01"
-	"github.com/go-acme/lego/v4/platform/config/env"
+	"github.com/soulik/lego/v4/challenge/dns01"
+	"github.com/soulik/lego/v4/platform/config/env"
 	"github.com/oracle/oci-go-sdk/common"
 	"github.com/oracle/oci-go-sdk/dns"
 )
