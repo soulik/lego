@@ -76,9 +76,6 @@ func NewDNSProviderConfig(config *Config) (*DNSProvider, error) {
 	if config.AccessToken == "" {
 		return nil, errors.New("dnsimple: OAuth token is missing")
 	}
-	if config.ZoneName == "" {
-		config.ZoneName = env.GetOrFile(EnvZoneName)
-	}
 
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: config.AccessToken})
 	client := dnsimple.NewClient(oauth2.NewClient(context.Background(), ts))
@@ -156,12 +153,13 @@ func (d *DNSProvider) getHostedZone(domain string) (string, error) {
 		return "", err
 	}
 
-	altZoneName := d.config.ZoneName
-	if altZoneName == "" {
-		altZoneName = env.GetOrFile(EnvZoneName)
-	}
+	zoneNameOverride := d.config.ZoneName
 
 	zoneName := dns01.UnFqdn(authZone)
+
+	if (zoneNameOverride != ""){
+		zoneName = zoneNameOverride
+	}
 
 	zones, err := d.client.Zones.ListZones(context.Background(), accountID, &dnsimple.ZoneListOptions{NameLike: &zoneName})
 	if err != nil {
@@ -170,13 +168,13 @@ func (d *DNSProvider) getHostedZone(domain string) (string, error) {
 
 	var hostedZone dnsimple.Zone
 	for _, zone := range zones.Data {
-		if (zone.Name == zoneName) || (zone.Name == altZoneName){
+		if zone.Name == zoneName {
 			hostedZone = zone
 		}
 	}
 
 	if hostedZone.ID == 0 {
-		return "", fmt.Errorf("zone %s not found in DNSimple for domain %s with alt zone name: %s", authZone, domain, altZoneName)
+		return "", fmt.Errorf("zone %s not found in DNSimple for domain %s with alt zone name: %s", authZone, domain, zoneNameOverride)
 	}
 
 	return hostedZone.Name, nil
